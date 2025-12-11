@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title data-i18n="title">BeatCrafter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" data-i18n="metaDescription" content="BeatCrafter lets you easily create a .mcpack file that replaces the music of Minecraft discs with your own songs.">
+  <meta name="keywords" data-i18n="metaKeywords" content="minecraft, mcpack, music disc, resource pack, custom music, beatcrafter, create minecraft pack">
+  <meta name="author" content="BeatCrafter">
+  <meta name="robots" content="index, follow">
+
+  <link rel="icon" type="image/png" href="https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/ee/Jukebox_JE2_BE2.png">
+  <link rel="shortcut icon" href="https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/ee/Jukebox_JE2_BE2.png">
+
+  <meta property="og:title" data-i18n="ogTitle" content="BeatCrafter — Create Music Packs for Minecraft">
+  <meta property="og:description" data-i18n="ogDescription" content="Replace the music of Minecraft discs with your own songs. Generate your .mcpack in seconds.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://beatcrafter.pages.dev">
+  <meta property="og:image" content="https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/ee/Jukebox_JE2_BE2.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" data-i18n="twitterTitle" content="BeatCrafter — Create Music Packs for Minecraft">
+  <meta name="twitter:description" data-i18n="twitterDescription" content="Replace the music of Minecraft discs with your own songs. Generate your .mcpack in seconds.">
+  <meta name="twitter:image" content="https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/ee/Jukebox_JE2_BE2.png">
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>            
+  <h1>BeatCrafter</h1>
+
+  <button id="toggleInformationBtn">
+    <i class="fas fa-info-circle"></i> <span data-i18n="showInfo">Show information</span>
+  </button>
+
+  <div id="information" class="information">
+    <p>
+      <strong data-i18n="whatIs">What does this tool do?</strong>
+      <span data-i18n="description">
+        It generates a <strong>.mcpack</strong> resource pack that replaces Minecraft music discs with your own songs.
+      </span>
+    </p>
+    <p data-i18n="note">
+      Note: Minecraft only supports <strong>.ogg</strong> audio files. If your songs are <strong>.mp3</strong>, convert them to <strong>.ogg</strong> here:
+    </p>
+    <ul>
+      <li>
+        <a href="https://www.freeconvert.com/mp3-to-ogg" target="_blank" rel="noopener">FreeConvert</a>
+        (<span data-i18n="web">Web, slow</span>)
+      </li>
+      <li>
+        <a href="https://play.google.com/store/apps/details?id=com.bdroid.audiomediaconverter" target="_blank" rel="noopener">Audio Converter</a>
+        (<span data-i18n="app">App, fast</span>)
+      </li>
+    </ul>
+  </div>
+
+  <div class="file-upload">
+    <label for="oggInput" class="upload-label" tabindex="0" aria-label="Upload OGG songs">
+      <i class="fas fa-music"></i>
+      <span data-i18n="chooseOgg">Choose .ogg songs</span>
+      <span class="sr-only" data-i18n="acceptOgg">Accepted formats: .ogg</span>
+    </label>
+    <input type="file" id="oggInput" multiple accept=".ogg" />
+
+    <label for="mcpackInput" class="upload-label" tabindex="0" aria-label="Upload Minecraft pack to edit">
+      <i class="fas fa-box-open"></i>
+      <span data-i18n="editMcpack">Edit .mcpack pack</span>
+      <span class="sr-only" data-i18n="acceptMcpack">Accepted formats: .mcpack</span>
+    </label>
+    <input type="file" id="mcpackInput" accept=".mcpack" />
+  </div>
+
+  <button id="toggleFormBtn" class="btn-vertical">
+  <i class="fas fa-sliders-h"></i>
+  
+  <span class="title" data-i18n="packOptions">Pack options</span>
+  <span class="subtitle" data-i18n="optional">(Optional)</span>
+</button>
+
+  <div id="packForm" class="information">
+    <h2 data-i18n="packInfoTitle">Pack information</h2>
+
+    <label>
+    <span data-i18n="packNameLabel">Pack name:</span>
+    <input type="text" id="packName" data-i18n-placeholder="packNamePlaceholder" placeholder="Music Discs" />
+</label>
+
+<label>
+    <span data-i18n="packDescLabel">Description:</span>
+    <textarea id="packDescription" data-i18n-placeholder="packDescPlaceholder" placeholder="Replaces the original music from Minecraft discs"></textarea>
+</label>
+
+    <label>
+      <span data-i18n="packVersionLabel">Version:</span>
+      <div class="version-inputs">
+        <input type="number" id="packVersionMajor" min="0" placeholder="1">
+        <span class="version-dot">.</span>
+        <input type="number" id="packVersionMinor" min="0" placeholder="0" inputmode="numeric" />
+        <span class="version-dot">.</span>
+        <input type="number" id="packVersionPatch" min="0" placeholder="0" inputmode="numeric" />
+      </div>
+    </label>
+
+    <div class="icon-label">
+  <span data-i18n="packIconLabel">Pack icon:</span>
+  <div class="icon-controls">
+    <button type="button" id="iconBtn">
+      <span data-i18n="select">Select</span>
+    </button>
+    <button type="button" id="removeIconBtn">
+      <span data-i18n="removeIcon">Remove</span>
+    </button>
+  </div>
+</div>
+<div id="iconPreview"></div>
+<input type="file" id="packIcon" accept="image/*" style="display:none;" />
+  </div>
+
+  <button id="togglePreviewBtn" style="display:none;">
+    <i class="fas fa-eye-slash"></i> <span data-i18n="hideSongs">Hide songs</span>
+  </button>
+  <div id="previewList" role="list" aria-label="Loaded songs list"></div>
+
+  <button id="createBtn" onclick="crearMod()">
+    <i class="fas fa-box"></i> <span data-i18n="createPack">Create Pack</span>
+  </button>
+
+  <p id="loader" aria-live="polite">
+    <i class="fas fa-spinner fa-spin"></i> <span data-i18n="loading">Generating pack...</span>
+  </p>
+  <p id="mensaje" aria-live="polite"></p>
+
+  <footer>
+    <span data-i18n="footer">Made with ♥ for Minecraft fans | Use your favorite songs as discs</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
